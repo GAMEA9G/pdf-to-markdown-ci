@@ -29,7 +29,7 @@ jobs:
           for file in *.pdf; do cp "$file" Downloads/; done
           for file in Downloads/*.pdf; do
             name=$(basename "$file" .pdf)
-            marker_single --ocr_all_pages "$file" filename:output/"$name".md
+            marker_single  "$file" filename:output/"$name".md --output_format markdown --force_ocr --paginate_output;
           done
 
       - name: Upload Markdown

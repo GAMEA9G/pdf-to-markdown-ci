@@ -1,0 +1,29 @@
+task:
+  name: pdf-to-markdown
+  timeout_in: 60m
+
+  container:
+    image: python:3.10
+
+  cache:
+    pip-cache: /tmp/pip-cache
+    model-cache: /root/.cache
+
+  install_script:
+    - pip install --upgrade pip
+    - pip install marker-pdf
+
+  script:
+    - mkdir -p Downloads output
+
+    # Copy all PDFs into Downloads (to match your command style)
+    - for file in *.pdf; do cp "$file" Downloads/; done
+
+    # Process each PDF using YOUR command style
+    - for file in Downloads/*.pdf; do
+        name=$(basename "$file" .pdf);
+        marker_single --ocr_all_pages "$file" filename:output/"$name".md;
+      done
+
+  artifacts:
+    path: "output/*"

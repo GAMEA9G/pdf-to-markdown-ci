@@ -1,0 +1,39 @@
+name: PDF to Markdown
+
+on:
+  push:
+    paths:
+      - "*.pdf"
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install marker-pdf
+
+      - name: Convert PDFs
+        run: |
+          mkdir -p Downloads output
+          for file in *.pdf; do cp "$file" Downloads/; done
+          for file in Downloads/*.pdf; do
+            name=$(basename "$file" .pdf)
+            marker_single --ocr_all_pages "$file" filename:output/"$name".md
+          done
+
+      - name: Upload Markdown
+        uses: actions/upload-artifact@v4
+        with:
+          name: markdown-output
+          path: output/*

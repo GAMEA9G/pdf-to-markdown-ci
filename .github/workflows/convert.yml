@@ -29,11 +29,11 @@ jobs:
           for file in *.pdf; do cp "$file" Downloads/; done
           for file in Downloads/*.pdf; do
             name=$(basename "$file" .pdf)
-            marker_single  "$file" --output_format markdown --force_ocr --paginate_output;
+            marker_single  "$file" --output_format markdown --force_ocr --output_dir output/--paginate_output;
           done
 
       - name: Upload Markdown
         uses: actions/upload-artifact@v4
         with:
           name: markdown-output
-          path: /*
+          path: output/*
